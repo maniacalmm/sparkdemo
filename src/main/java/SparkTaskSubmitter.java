@@ -17,17 +17,17 @@ public class SparkTaskSubmitter {
 
     public static void submit(String[] args) throws Exception {
 
-        File file = new File("./gcloudAuth/helloworld");
+        File file = new File("gcloudAuth/helloworld");
 
         BufferedReader reader = new BufferedReader(new FileReader(file));
 
         System.out.println(reader.readLine());
 
-        String secretPath = "./gcloud/secret.json";
+        String secretPath = "gcloudAuth/secret.json";
         String[] cmds = new String[]{
                 "--master", "k8s://https://35.229.152.59",
                 "--deploy-mode", "cluster",
-                "--conf", "spark.kubernetes.container.image=asia.gcr.io/kubestart-218005/spark:v1.2-w-depn",
+                "--conf", "spark.kubernetes.container.image=asia.gcr.io/kubestart-218005/spark:v1.3k -w-depn",
                 "--conf","spark.kubernetes.driver.secrets.spark-sa=" + secretPath,
                 "--conf","spark.kubernetes.executor.secrets.spark-sa=" + secretPath,
                 "--conf","spark.kubernetes.driverEnv.GOOGLE_APPLICATION_CREDENTIALS=" + secretPath,
