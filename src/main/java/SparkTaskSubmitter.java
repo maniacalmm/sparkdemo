@@ -17,19 +17,29 @@ public class SparkTaskSubmitter {
 
     public static void submit(String[] args) throws Exception {
 
-        final String sparkHome = "/Users/TangDexian/spark-2.3.1-bin-hadoop2.7";
+        File file = new File("./gcloudAuth/helloworld");
+
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+
+        System.out.println(reader.readLine());
+
+        String secretPath = "./gcloud/secret.json";
         String[] cmds = new String[]{
                 "--master", "k8s://https://35.229.152.59",
                 "--deploy-mode", "cluster",
-                "--conf", "spark.kubernetes.container.image=geekbeta/spark:v100",
-                "--conf", "spark.kubernetes.authenticate.driver.serviceAccountName=spark",
-                "--conf", "spark.app.name=wtfhappend",
-                "--conf", "spark.executor.instances=3",
-                "--class", "FuckingPI",
-                "--driver-cores", "0.1",
+                "--conf", "spark.kubernetes.container.image=asia.gcr.io/kubestart-218005/spark:v1.2-w-depn",
+                "--conf","spark.kubernetes.driver.secrets.spark-sa=" + secretPath,
+                "--conf","spark.kubernetes.executor.secrets.spark-sa=" + secretPath,
+                "--conf","spark.kubernetes.driverEnv.GOOGLE_APPLICATION_CREDENTIALS=" + secretPath,
+                "--conf","spark.executorEnv.GOOGLE_APPLICATION_CREDENTIALS=" + secretPath,
+                "--conf", "spark.app.name=plainSparkJob",
+                "--conf", "spark.executor.instances=5",
+                "--class", "Main",
+                "--driver-cores", "0.4",
                 "--executor-cores", "1",
                 "--name", "spark-pi",
-                "local:///opt/spark/tang_stuff/spark-demo.jar"
+                "local:///opt/spark/ykzn-job/sparkjob-1.0-SNAPSHOT-jar-with-dependencies.jar",
+                "distinct"
         };
 
         SparkSubmit.main(cmds);

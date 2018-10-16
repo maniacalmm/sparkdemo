@@ -1,12 +1,11 @@
 package routers;
 
-import spark.Request;
-import spark.Response;
+import org.apache.spark.sql.SparkSession;
 import spark.Route;
 
-public class TestRoute implements Route {
-    @Override
-    public Object handle(Request request, Response response) throws Exception {
+public final class Routers {
+
+    public static Route testRoute = (request, response) -> {
         StringBuilder sb = new StringBuilder();
         sb.append("you have reached testing route :)\n");
         sb.append("the following is request info:\n");
@@ -18,5 +17,10 @@ public class TestRoute implements Route {
         sb.append("You have a nice day :)");
 
         return sb.toString();
-    }
+    };
+
+    public static Route distinctWord = (request, response) -> {
+        return "it workded";
+    };
+
 }

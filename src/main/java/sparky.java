@@ -1,6 +1,6 @@
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import routers.TestRoute;
+import routers.Routers;
 
 import static spark.Spark.*;
 
@@ -16,6 +16,7 @@ public class sparky {
         port(5555);
         logger.info("port running at 5555");
 
-        get("/test", new TestRoute());
+        get("/test", Routers.testRoute);
+        get("/wordcount", Routers.distinctWord);
     }
 }
