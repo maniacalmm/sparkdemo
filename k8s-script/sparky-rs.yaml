@@ -1,0 +1,18 @@
+apiVersion: apps/v1beta2
+kind: ReplicaSet
+metadata:
+    name: sparky
+spec:
+    replicas: 2
+    selector:
+        matchLabels:
+            app: sparky
+    template: 
+        metadata:
+            labels:
+                app: sparky
+        spec:
+            containers:
+            - name: sparkly
+              image: geekbeta/sparky:v1
+
