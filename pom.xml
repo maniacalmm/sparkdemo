@@ -71,6 +71,15 @@
             <artifactId>slf4j-simple</artifactId>
             <version>1.7.21</version>
         </dependency>
+
+        <!-- https://mvnrepository.com/artifact/org.apache.spark/spark-kubernetes -->
+        <dependency>
+            <groupId>org.apache.spark</groupId>
+            <artifactId>spark-kubernetes_2.11</artifactId>
+            <version>2.3.2</version>
+        </dependency>
+
+
     </dependencies>
 
 
