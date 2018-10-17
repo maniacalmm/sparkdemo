@@ -23,7 +23,7 @@ public class SparkTaskSubmitter {
 
         System.out.println(reader.readLine());
 
-        String secretPath = "gcloudAuth/secret.json";
+        String secretPath = "/opt/credentials/secret.json";
         String[] cmds = new String[]{
                 "--master", "k8s://https://35.229.152.59",
                 "--deploy-mode", "cluster",
