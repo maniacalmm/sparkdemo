@@ -23,6 +23,7 @@ public class SparkTaskSubmitter {
         String[] cmds = new String[]{
                 "--verbose",
                 "--master", "k8s://https://35.229.152.59",
+                "--conf", "spark.kubernetes.namespace=default",
                 "--deploy-mode", "cluster",
                 "--conf", "spark.kubernetes.driverEnv.GCS_PROJECT_ID=kubestart-218005",
                 "--conf", "spark.kubernetes.executorEnv.GCS_PROJECT_ID=kubestart-218005",
@@ -33,14 +34,16 @@ public class SparkTaskSubmitter {
                 "--conf", "spark.executorEnv.GOOGLE_APPLICATION_CREDENTIALS=" + secretPath,
                 "--conf", "spark.app.name=plainSparkJob",
                 "--conf", "spark.executor.instances=1",
-//                "--conf", "spark.hadoop.google.cloud.auth.service.account.enable=true",
-//                "--conf", "spark.hadoop.google.cloud.auth.service.account.json.keyfile="+secretPath,
+                "--conf", "spark.hadoop.fs.gs.project.id=kubestart-218005",
+                "--conf", "spark.hadoop.google.cloud.auth.service.account.enable=true",
+                "--conf", "spark.hadoop.google.cloud.auth.service.account.json.keyfile="+secretPath,
                 "--class", "Main",
                 "--driver-cores", "0.4",
                 "--executor-cores", "1",
                 "--name", "spark-pi",
                 "local:///opt/spark/ykzn-job/sparkjob-1.0-SNAPSHOT-jar-with-dependencies.jar",
-                "distinct"
+                "distinct",
+                "gs://spark-stuff-tang/sales.csv"
         };
 
         SparkSubmit.main(cmds);
