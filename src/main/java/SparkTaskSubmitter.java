@@ -17,23 +17,24 @@ public class SparkTaskSubmitter {
 
     public static void submit(String[] args) throws Exception {
 
-        File file = new File("gcloudAuth/helloworld");
 
-        BufferedReader reader = new BufferedReader(new FileReader(file));
-
-        System.out.println(reader.readLine());
-
-        String secretPath = "/opt/credentials/secret.json";
+        String secretPath = "/opt/spark/credentials/secret.json";
+        String secretParentPath = "/opt/spark/credentials/";
         String[] cmds = new String[]{
+                "--verbose",
                 "--master", "k8s://https://35.229.152.59",
                 "--deploy-mode", "cluster",
-                "--conf", "spark.kubernetes.container.image=asia.gcr.io/kubestart-218005/spark:v1.3k -w-depn",
-                "--conf","spark.kubernetes.driver.secrets.spark-sa=" + secretPath,
-                "--conf","spark.kubernetes.executor.secrets.spark-sa=" + secretPath,
-                "--conf","spark.kubernetes.driverEnv.GOOGLE_APPLICATION_CREDENTIALS=" + secretPath,
-                "--conf","spark.executorEnv.GOOGLE_APPLICATION_CREDENTIALS=" + secretPath,
+                "--conf", "spark.kubernetes.driverEnv.GCS_PROJECT_ID=kubestart-218005",
+                "--conf", "spark.kubernetes.executorEnv.GCS_PROJECT_ID=kubestart-218005",
+                "--conf", "spark.kubernetes.container.image=asia.gcr.io/kubestart-218005/spark:v1.8.1",
+                "--conf", "spark.kubernetes.driver.secrets.spark-sa=" + secretParentPath,
+                "--conf", "spark.kubernetes.executor.secrets.spark-sa=" + secretParentPath,
+                "--conf", "spark.kubernetes.driverEnv.GOOGLE_APPLICATION_CREDENTIALS=" + secretPath,
+                "--conf", "spark.executorEnv.GOOGLE_APPLICATION_CREDENTIALS=" + secretPath,
                 "--conf", "spark.app.name=plainSparkJob",
-                "--conf", "spark.executor.instances=5",
+                "--conf", "spark.executor.instances=1",
+//                "--conf", "spark.hadoop.google.cloud.auth.service.account.enable=true",
+//                "--conf", "spark.hadoop.google.cloud.auth.service.account.json.keyfile="+secretPath,
                 "--class", "Main",
                 "--driver-cores", "0.4",
                 "--executor-cores", "1",
