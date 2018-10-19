@@ -1,7 +1,9 @@
 package routers;
 
+import org.apache.spark.deploy.SparkSubmit;
 import org.apache.spark.sql.SparkSession;
 import spark.Route;
+import spark_compute.SparkTaskSubmitter;
 
 public final class Routers {
 
@@ -20,6 +22,7 @@ public final class Routers {
     };
 
     public static Route distinctWord = (request, response) -> {
+        SparkTaskSubmitter.submit(new String[]{});
         return "it workded";
     };
 

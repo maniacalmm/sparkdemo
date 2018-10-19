@@ -1,5 +1,3 @@
-package spark_compute;
-
 import org.apache.spark.SparkConf;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
@@ -14,21 +12,26 @@ import scala.Tuple2;
 import javax.print.DocFlavor;
 import java.io.*;
 import java.lang.reflect.Executable;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
 
-public class SparkComputeTasks {
+public class SparkBenchMarking {
 
     public static void main(String[] args) {
         runspark();
-        runSequentially();
+//        runSequentially();
     }
 
     public static void runspark() {
+
+        long start = System.currentTimeMillis();
         SparkSession spark = SparkSession.builder()
                 .master("local[" + Runtime.getRuntime().availableProcessors() + "]")
                 .appName("JavaSpark SQL basic example")
+                .config("spark.executor.cores", Runtime.getRuntime().availableProcessors())
+                .config("verbose", "true")
                 .getOrCreate();
 
         spark.sparkContext().setLogLevel("WARN");
@@ -36,19 +39,41 @@ public class SparkComputeTasks {
             System.out.println(o._1 + " " + o._2);
         }
 
+        System.out.println("#######################################################");
+
+
+        File dataFolder = new File("/home/dexian/19386/virtualPurchases-2017-11-12gz");
+        String[] fileNames = Arrays.stream(dataFolder.listFiles()).map(f -> f.getAbsolutePath()).toArray(String[]::new);
+        for (String f : fileNames) System.out.println(f);
+
+        System.out.println("starting reading...");
         Dataset<Row> df = spark.read()
                 .option("header", "true")
                 .option("inferSchema", "true")
-                .csv("/home/dexian/sales.csv");
+                .csv(fileNames);
 
 
-        Column regionCol = df.col("Region");
+        System.out.println("printing schema...");
+        printCurrentTime(start);
+        df.printSchema();
+        Column columnOfInterest = df.col(df.columns()[0]);
 
-        Dataset<Row> distinct = df.select(regionCol).distinct();
+        System.out.println("column count:...");
+        printCurrentTime(start);
+        System.out.println(df.count());
 
-        long start = System.currentTimeMillis();
-        distinct.show();
-        System.out.println("spark: " + (System.currentTimeMillis() - start));
+        System.out.println("distinct command...");
+        printCurrentTime(start);
+        Dataset<Row> distinct = df.select(columnOfInterest).distinct();
+
+        System.out.println("show distinct result");
+        printCurrentTime(start);
+        distinct.coalesce(1).write().csv("/home/dexian/19386/virtualPurchases-2017-11-12gz/output");
+        printCurrentTime(start);
+    }
+
+    private static void printCurrentTime(double start) {
+        System.out.println("elapsed time: " + (System.currentTimeMillis() - start) / 1_000);
     }
 
     public static void runSequentially() {
